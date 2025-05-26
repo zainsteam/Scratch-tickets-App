@@ -338,6 +338,12 @@ export default function AppNavigator() {
             initialParams={{type: 'Newest'}}
             options={{headerShown: true}}
           />
+          <Stack.Screen
+            name="Grand Prize Tickets"
+            component={MapScreen}
+            initialParams={{type: 'Grand Prize'}}
+            options={{headerShown: true}}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>

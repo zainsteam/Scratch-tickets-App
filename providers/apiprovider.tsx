@@ -70,8 +70,10 @@ export const fetchTopTickets = async (stateName: any, type: any) => {
   let selectedType = '';
   if (type == 'Top 10') {
     selectedType = 'top';
-  } else {
+  } else if (type == 'Newest') {
     selectedType = 'newly';
+  } else {
+    selectedType = 'grand-prize';
   }
 
   try {

@@ -154,7 +154,7 @@ const TicketDetailsScreen = ({route}: any) => {
                     </Text>
                   </View>
                   <View style={styles.bottomRow}>
-                    {type == 'Newest' && (
+                    {(type == 'Newest' || type == 'Grand Prize') && (
                       <View style={styles.detailRow}>
                         <Text style={styles.label}>Ranking:</Text>
                         <Text style={styles.overlayRanking}>

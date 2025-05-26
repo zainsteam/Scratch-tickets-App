@@ -84,7 +84,15 @@ const HistoryScreen = ({navigation}: any) => {
       onPress={() => Alert.alert(`More info: ${ticket.infoUrl}`)}>
       <View style={styles.listCardContainer}>
         {/* Left Side: Image with Overlay */}
-        <ImageBackground source={ticket.image} style={styles.ticketImage}>
+        <ImageBackground
+          source={
+            ticket.image
+              ? {
+                  uri: `https://admin.scratchticketgenie.us/${ticket.image}`,
+                }
+              : require('../assets/images/logo4.png')
+          }
+          style={styles.ticketImage}>
           {/* Overlay for Price and Ranking */}
           {/* <View style={styles.imageOverlay}>
             <Text style={styles.overlayRanking}>{ticket.ranking}</Text>
@@ -104,7 +112,7 @@ const HistoryScreen = ({navigation}: any) => {
           </Text>
 
           {/* Launch Date */}
-          {ticket.type == 'Newest' && (
+          {(ticket.type == 'Newest' || ticket.type == 'Grand Prize') && (
             <View style={styles.detailRow}>
               <Text style={styles.label}>Ranking:</Text>
               <Text style={styles.overlayRanking}>{ticket.ranking}</Text>
@@ -142,9 +150,13 @@ const HistoryScreen = ({navigation}: any) => {
             style={styles.cardContainer}>
             <View style={styles.listCardContainer}>
               <Image
-                source={{
-                  uri: `https://admin.scratchticketgenie.us/` + item.image,
-                }}
+                source={
+                  item.image
+                    ? {
+                        uri: `https://admin.scratchticketgenie.us/${item.image}`,
+                      }
+                    : require('../assets/images/logo4.png')
+                }
                 style={styles.ticketImage}
               />
               <View style={styles.detailsContainer}>
@@ -161,7 +173,7 @@ const HistoryScreen = ({navigation}: any) => {
                   </Text>
                 </View>
                 <View style={styles.bottomRow}>
-                  {item.type == 'Newest' && (
+                  {(item.type == 'Newest' || item.type == 'Grand Prize') && (
                     <View style={styles.detailRow}>
                       <Text style={styles.label}>Ranking:</Text>
                       <Text style={styles.overlayRanking}>{item.ranking}</Text>

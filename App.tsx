@@ -12,6 +12,16 @@ import {getMessaging} from '@react-native-firebase/messaging';
 import {PermissionsAndroid} from 'react-native';
 import HomeScreen from './screens/home';
 import AppNavigator from './routes/homestack';
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+  useForeground,
+} from 'react-native-google-mobile-ads';
+
+const adUnitId = __DEV__
+  ? TestIds.ADAPTIVE_BANNER
+  : 'ca-app-pub-3713847936361138/5905727511';
 
 PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
@@ -48,7 +58,15 @@ function App(): React.JSX.Element {
     return unsubscribe;
   }, []);
 
-  return <AppNavigator />;
+  return (
+    <>
+      <AppNavigator />
+      <BannerAd
+        unitId={adUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+      />
+    </>
+  );
 }
 
 export default App;

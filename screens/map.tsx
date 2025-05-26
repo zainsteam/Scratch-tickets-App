@@ -13,6 +13,7 @@ import MapComponent from '../components/map';
 
 export default function MapScreen({route, navigation}: any) {
   const {type} = route.params;
+  console.log(type, 'type ');
   const [selectedState, setSelectedState] = useState('');
 
   return (

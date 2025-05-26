@@ -13,7 +13,7 @@ const TSpanComponent = React.memo(
         y={y}
         fontSize={fontSize}
         textAnchor={textAnchor}
-        fill={type === 'Newest' ? '#fff' : '#000'}>
+        fill={type === 'Newest' || type === 'Grand Prize' ? '#fff' : '#000'}>
         {displayText}
       </TSpan>
     );
