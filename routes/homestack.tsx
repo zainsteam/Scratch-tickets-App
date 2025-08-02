@@ -36,6 +36,8 @@ import Popover from 'react-native-popover-view';
 import {DrawerContentScrollView} from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ResetPasswordScreen from '../screens/resetpassword';
+import TermsAndCondition from '../screens/termsandconditions';
+import PrivacyPolicy from '../screens/privacypolicy';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -167,8 +169,14 @@ const getIcon = (screenName: string) => {
       return 'fiber-new';
     case 'Details':
       return 'info';
+    case 'Grand Prize Tickets':
+      return 'workspace-premium';
     case 'Settings':
       return 'settings';
+    case 'Privacy Policy':
+      return 'policy';
+    case 'Terms and Conditions':
+      return 'edit-document';
     default:
       return 'help';
   }
@@ -264,8 +272,18 @@ function HomeStack() {
         component={MapScreen}
         initialParams={{type: 'Newest'}}
       />
+      <Drawer.Screen
+        name="Grand Prize Tickets"
+        component={MapScreen}
+        initialParams={{type: 'Grand Prize'}}
+      />
       <Drawer.Screen name="Details" component={TicketDetailsScreen} />
       <Drawer.Screen name="Settings" component={SettingsScreen} />
+      <Drawer.Screen name="Privacy Policy" component={PrivacyPolicy} />
+      <Drawer.Screen
+        name="Terms and Conditions"
+        component={TermsAndCondition}
+      />
     </Drawer.Navigator>
   );
 }

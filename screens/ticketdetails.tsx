@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TicketDetailsScreen = ({route}: any) => {
   const {select, type} = route.params;
+  console.log(type, 'typeeee');
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   // Update useState with correct type
@@ -87,6 +88,11 @@ const TicketDetailsScreen = ({route}: any) => {
     current_winning_probability: string;
     initial_winning_probability: string;
     url: string;
+    launch_date: string;
+    top_grand_prize: number;
+    initial_grand_prize: string;
+    current_grand_prize: string;
+    grand_prizes_left: string;
   };
 
   const formatDate = (dateString: string) => {
@@ -118,7 +124,6 @@ const TicketDetailsScreen = ({route}: any) => {
         {type} Tickets of {select}
       </Text>
 
-      {/* Show Loader When Fetching Data */}
       {loading ? (
         <ActivityIndicator size="large" color="#1097ff" style={styles.loader} />
       ) : tickets?.length > 0 ? (
@@ -131,64 +136,182 @@ const TicketDetailsScreen = ({route}: any) => {
               onPress={() => handleTicketPress(item)}
               style={styles.cardContainer}>
               <View style={styles.listCardContainer}>
-                <Image
-                  source={
-                    item.image
-                      ? {
-                          uri: `https://admin.scratchticketgenie.us/${item.image}`,
-                        }
-                      : require('../assets/images/logo4.png')
-                  }
-                  style={styles.ticketImage}
-                />
+                {type === 'Newest' && (
+                  <View style={styles.imageWrapper}>
+                    <Image
+                      source={
+                        item.image
+                          ? {
+                              uri: `https://admin.scratchticketgenie.us/${item.image}`,
+                            }
+                          : require('../assets/images/logo4.png')
+                      }
+                      style={styles.ticketImage}
+                    />
+
+                    {/* {(type === 'Newest' || type === 'Grand Prize') && (
+                      <View style={styles.badgeContainer}>
+                        <Text style={styles.badgeText}>#{item.ranking}</Text>
+                      </View>
+                    )} */}
+                  </View>
+                )}
+
                 <View style={styles.detailsContainer}>
-                  <View>
-                    <View style={styles.firstRow}>
-                      <Text style={styles.date}>
-                        {formatDate(item.created_at)}
-                      </Text>
-                      <Text style={styles.overlayPrice}>$ {item.cost}</Text>
-                    </View>
+                  {/* Title & Price in one row */}
+                  <View style={styles.titlePriceRow}>
                     <Text style={styles.ticketName} numberOfLines={2}>
                       {item.name}
                     </Text>
-                  </View>
-                  <View style={styles.bottomRow}>
-                    {(type == 'Newest' || type == 'Grand Prize') && (
-                      <View style={styles.detailRow}>
-                        <Text style={styles.label}>Ranking:</Text>
-                        <Text style={styles.overlayRanking}>
-                          {item.ranking}
+                    <Text style={styles.price}>
+                      {item.cost ? (
+                        <Text style={styles.roiValue}>
+                          {new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: 'USD',
+                            maximumFractionDigits: 2,
+                          }).format(item.cost)}
                         </Text>
-                      </View>
-                    )}
-                    <View style={styles.detailRow}>
-                      <Text style={styles.label}>Initial (ROI):</Text>
-                      <Text style={styles.value}>
-                        {item.initial_winning_probability}%
-                      </Text>
-                    </View>
-                    {type == 'Top 10' && (
-                      <>
-                        <View style={styles.detailRow}>
-                          <Text style={styles.label}>Current (ROI):</Text>
-                          <Text style={styles.value}>
-                            {item.current_winning_probability}%
+                      ) : null}
+                    </Text>
+                  </View>
+
+                  {/* Only show date if not "Top 10" */}
+                  {/* {type !== 'Top 10' && (
+                    <Text style={styles.date}>
+                      {formatDate(item.created_at)}
+                    </Text>
+                  )} */}
+
+                  {/* ROI values */}
+
+                  {type === 'Newest' && (
+                    <View style={styles.roiGrid}>
+                      <View
+                        style={[styles.roiColumn, {alignItems: 'flex-start'}]}>
+                        <Text style={styles.roiLabel}>Initial ROI</Text>
+                        {item.initial_winning_probability ? (
+                          <Text style={styles.roiValue}>
+                            {parseFloat(
+                              item.initial_winning_probability,
+                            ).toFixed(2)}
+                            %
                           </Text>
-                        </View>
-                        <View style={styles.detailRow}>
-                          <Text style={styles.label}>Difference (ROI):</Text>
-                          <Text style={styles.value}>
+                        ) : null}
+                      </View>
+
+                      <View style={[styles.roiColumn, {alignItems: 'center'}]}>
+                        <Text style={styles.roiLabel}>Launch Date</Text>
+                        {item.launch_date ? (
+                          <Text style={styles.roiValue}>
+                            {formatDate(item.launch_date)}
+                          </Text>
+                        ) : null}
+                      </View>
+                      <View
+                        style={[styles.roiColumn, {alignItems: 'flex-end'}]}>
+                        <Text style={styles.roiLabel}>Ranking</Text>
+                        {item.ranking ? (
+                          <Text style={styles.roiValue}>{item.ranking}</Text>
+                        ) : null}
+                      </View>
+                    </View>
+                  )}
+
+                  {type === 'Grand Prize' && (
+                    <View style={styles.roiGrid}>
+                      <View
+                        style={[styles.roiColumn, {alignItems: 'flex-start'}]}>
+                        <Text style={styles.roiLabel}>Grand Prize</Text>
+                        {item.top_grand_prize ? (
+                          <Text style={styles.roiValue}>
+                            {new Intl.NumberFormat('en-US', {
+                              style: 'currency',
+                              currency: 'USD',
+                              maximumFractionDigits: 2,
+                            }).format(item.top_grand_prize)}
+                          </Text>
+                        ) : null}
+                      </View>
+                      <View style={[styles.roiColumn, {alignItems: 'center'}]}>
+                        <Text style={styles.roiLabel}>Initial</Text>
+                        {item.initial_grand_prize ? (
+                          <Text style={styles.roiValue}>
+                            {/* {item.initial_grand_prize} */}
+                            {parseFloat(item.initial_grand_prize).toFixed(0)}
+                          </Text>
+                        ) : null}
+                      </View>
+                      <View style={[styles.roiColumn, {alignItems: 'center'}]}>
+                        <Text style={styles.roiLabel}>Current</Text>
+                        {item.current_grand_prize ? (
+                          <Text style={styles.roiValue}>
+                            {/* {item.current_grand_prize} */}
+                            {parseFloat(item.current_grand_prize).toFixed(0)}
+                          </Text>
+                        ) : null}
+                      </View>
+                      <View
+                        style={[styles.roiColumn, {alignItems: 'flex-end'}]}>
+                        <Text style={styles.roiLabel}>Remaining</Text>
+                        {item.initial_grand_prize ? (
+                          <Text style={styles.roiValue}>
+                            {item.grand_prizes_left}%
+                          </Text>
+                        ) : null}
+                      </View>
+                    </View>
+                  )}
+
+                  {type === 'Top 10' && (
+                    <View style={styles.roiGrid}>
+                      <View
+                        style={[styles.roiColumn, {alignItems: 'flex-start'}]}>
+                        <Text style={styles.roiLabel}>Initial ROI</Text>
+                        {item.initial_winning_probability ? (
+                          <Text style={styles.roiValue}>
+                            {parseFloat(
+                              item.initial_winning_probability,
+                            ).toFixed(2)}
+                            %
+                          </Text>
+                        ) : null}
+                      </View>
+                      <View style={[styles.roiColumn, {alignItems: 'center'}]}>
+                        <Text style={styles.roiLabel}>Current ROI</Text>
+                        {item.current_winning_probability ? (
+                          <Text style={styles.roiValue}>
+                            {parseFloat(
+                              item.current_winning_probability,
+                            ).toFixed(2)}
+                            %
+                          </Text>
+                        ) : null}
+                      </View>
+                      <View
+                        style={[styles.roiColumn, {alignItems: 'flex-end'}]}>
+                        <Text style={styles.roiLabel}>Diff ROI</Text>
+                        {item.current_winning_probability &&
+                        item.initial_winning_probability ? (
+                          <Text
+                            style={[
+                              styles.roiValue,
+                              parseFloat(item.current_winning_probability) -
+                                parseFloat(item.initial_winning_probability) <
+                              0
+                                ? {color: 'red'}
+                                : {color: 'green'},
+                            ]}>
                             {(
                               parseFloat(item.current_winning_probability) -
                               parseFloat(item.initial_winning_probability)
                             ).toFixed(2)}
                             %
                           </Text>
-                        </View>
-                      </>
-                    )}
-                  </View>
+                        ) : null}
+                      </View>
+                    </View>
+                  )}
                 </View>
               </View>
             </TouchableOpacity>
@@ -198,7 +321,7 @@ const TicketDetailsScreen = ({route}: any) => {
         <Text style={styles.noTicketsText}>No tickets available</Text>
       )}
 
-      {/* Confirmation Modal */}
+      {/* Modal */}
       <Modal
         visible={modalVisible}
         transparent
@@ -230,13 +353,116 @@ const TicketDetailsScreen = ({route}: any) => {
 };
 
 const styles = StyleSheet.create({
+  titlePriceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4, // Less space between title and ROI
+  },
+  cost: {},
+
+  ticketName: {
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
+    paddingRight: 6,
+  },
+
+  price: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#ff7a00',
+  },
+
+  // Already exists, no change needed unless spacing feels tight
+  date: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#666',
+    marginBottom: 6, // Optional tweak
+  },
+
+  imageWrapper: {
+    position: 'relative',
+  },
+
+  badgeContainer: {
+    position: 'absolute',
+    top: 6,
+    left: 6,
+    backgroundColor: '#FF6B00',
+    borderRadius: 12,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    zIndex: 1,
+  },
+
+  badgeText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+
+  datePriceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // marginTop: 6,
+    // marginBottom: 10,
+  },
+
+  // price: {
+  //   fontSize: 14,
+  //   fontWeight: 'bold',
+  //   color: '#ff7a00',
+  // },
+
+  roiHeading: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginTop: 20,
+    marginBottom: 4,
+    color: '#444',
+  },
+
+  roiGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
+  roiColumn: {
+    flex: 1,
+    // alignItems: 'center',
+  },
+
+  roiLabel: {
+    fontSize: 13,
+    color: '#777',
+    marginBottom: 2,
+  },
+
+  roiValue: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+
+  rankingRow: {
+    flexDirection: 'row',
+    marginTop: 8,
+  },
+
+  // ticketName: {
+  //   fontSize: 16,
+  //   fontWeight: '600',
+  //   marginTop: 6,
+  // },
+
   screenContainer: {
     flex: 1,
     borderTopRightRadius: 30,
     borderTopLeftRadius: 30,
     marginTop: -30,
     paddingTop: 30,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     zIndex: 1000,
     backgroundColor: '#f4f4f4',
   },
@@ -249,7 +475,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
   },
-  bottomRow: {},
+  bottomRow: {paddingTop: 10},
   header: {
     fontSize: 20,
     fontWeight: '700',
@@ -274,7 +500,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 15,
     borderBottomLeftRadius: 15,
     width: 100,
-    height: 140,
+    height: 100,
     marginRight: 10,
   },
   firstRow: {
@@ -293,14 +519,15 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     flex: 1,
-    justifyContent: 'space-between',
-    paddingVertical: 10,
+    // justifyContent: 'space-between',
+    paddingVertical: 15,
+    paddingLeft: 15,
   },
-  ticketName: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#333',
-  },
+  // ticketName: {
+  //   fontSize: 16,
+  //   fontWeight: '700',
+  //   color: '#333',
+  // },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -312,14 +539,14 @@ const styles = StyleSheet.create({
   },
   value: {
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '900',
     color: '#666',
   },
-  date: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#666',
-  },
+  // date: {
+  //   fontSize: 14,
+  //   fontWeight: '700',
+  //   color: '#666',
+  // },
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
