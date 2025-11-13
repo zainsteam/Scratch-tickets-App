@@ -3,6 +3,7 @@ import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
 import Firebase
+import FirebaseCore
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,7 +16,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
-    FirebaseApp.configure()
+    if FirebaseApp.app() == nil {
+      if let filePath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist"),
+         let options = FirebaseOptions(contentsOfFile: filePath) {
+        FirebaseApp.configure(options: options)
+      } else {
+        // Fallback: configure explicitly if plist isn't bundled
+        let options = FirebaseOptions(
+          googleAppID: "1:497463621680:ios:3ce69114d033f9bb2355f5",
+          gcmSenderID: "497463621680"
+        )
+        options.apiKey = "AIzaSyD4YltnRB7wMlBQcxK0uNLJvMcGfo8-q00"
+        options.projectID = "scratchticketgenie-cda36"
+        options.storageBucket = "scratchticketgenie-cda36.firebasestorage.app"
+        FirebaseApp.configure(options: options)
+      }
+    }
     let delegate = ReactNativeDelegate()
     let factory = RCTReactNativeFactory(delegate: delegate)
     delegate.dependencyProvider = RCTAppDependencyProvider()

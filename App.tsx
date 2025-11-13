@@ -6,10 +6,12 @@
  */
 
 import React, {useEffect} from 'react';
+import IconMI from 'react-native-vector-icons/MaterialIcons';
+import IconFA from 'react-native-vector-icons/FontAwesome';
 // import './firebaseConfig';
 import {getApps, initializeApp} from '@react-native-firebase/app';
 import {getMessaging} from '@react-native-firebase/messaging';
-import {PermissionsAndroid} from 'react-native';
+import {PermissionsAndroid, Platform} from 'react-native';
 import HomeScreen from './screens/home';
 import AppNavigator from './routes/homestack';
 import {
@@ -23,7 +25,9 @@ const adUnitId = __DEV__
   ? TestIds.ADAPTIVE_BANNER
   : 'ca-app-pub-3713847936361138/5905727511';
 
-PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+if (Platform.OS === 'android') {
+  PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+}
 
 async function getFCMToken() {
   try {
@@ -37,6 +41,16 @@ async function getFCMToken() {
 
 function App(): React.JSX.Element {
   useEffect(() => {
+    // Ensure MaterialIcons font is loaded on iOS
+    IconMI.loadFont();
+    // Ensure FontAwesome font is loaded on iOS
+    IconFA.loadFont();
+    // iOS: request notification permission before registering for remote messages
+    if (Platform.OS === 'ios') {
+      getMessaging()
+        .requestPermission()
+        .catch(() => {});
+    }
     const firebaseConfig = {
       apiKey: 'AIzaSyAiW4zVngCI8REeZe_xsX2wEtRvLvPkKW4',
       authDomain: 'scratchticketgenie-cda36.firebaseapp.com',

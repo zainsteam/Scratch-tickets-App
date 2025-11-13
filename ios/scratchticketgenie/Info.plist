@@ -2,27 +2,21 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-<!-- Firebase Messaging -->
-<key>FirebaseAppDelegateProxyEnabled</key>
-<true/>
-
-<!-- Image Picker -->
-<key>NSCameraUsageDescription</key>
-<string>This app needs access to your camera</string>
-<key>NSPhotoLibraryUsageDescription</key>
-<string>This app needs access to your photos</string>
-<key>NSPhotoLibraryAddUsageDescription</key>
-<string>This app needs permission to save photos</string>
-
-<!-- AdMob -->
-<key>SKAdNetworkItems</key>
-<array>
-  <dict>
-    <key>SKAdNetworkIdentifier</key>
-    <string>cstr6suwn9.skadnetwork</string>
-  </dict>
-</array>
-
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera access is required for image picker.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo library access is required for image picker.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs permission to save photos</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -55,13 +49,7 @@
 	<key>NSUserTrackingUsageDescription</key>
 	<string>This identifier will be used to deliver personalized ads to you.</string>
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-3713847936361138~5663050909</string> <!-- Replace with your AdMob App ID -->
-	<key>FirebaseAppDelegateProxyEnabled</key>
-	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Camera access is required for image picker.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo library access is required for image picker.</string>
+	<string>ca-app-pub-3713847936361138~5663050909</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location access is required for certain features.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -88,5 +76,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array/>
 </dict>
 </plist>

@@ -170,13 +170,13 @@ const getIcon = (screenName: string) => {
     case 'Details':
       return 'info';
     case 'Grand Prize Tickets':
-      return 'workspace-premium';
+      return 'military-tech';
     case 'Settings':
       return 'settings';
     case 'Privacy Policy':
       return 'policy';
     case 'Terms and Conditions':
-      return 'edit-document';
+      return 'description';
     default:
       return 'help';
   }
@@ -215,7 +215,7 @@ const CustomHeader = ({title}: any) => {
         {navigation.canGoBack() && title != 'Home' && (
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <View style={styles.iconContainer}>
-              <Icon name="arrow-left" size={24} color="#fff" />
+              <Icon name="arrow-back" size={24} color="#fff" />
             </View>
           </TouchableOpacity>
         )}
