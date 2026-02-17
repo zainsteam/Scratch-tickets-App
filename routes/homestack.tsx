@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
+  Platform,
   Modal,
 } from 'react-native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -77,20 +78,26 @@ const CustomDrawerContent = (props: any) => {
     <DrawerContentScrollView
       {...props}
       contentContainerStyle={styles.drawerContainer}>
-      {/* Profile Section */}
-      <TouchableOpacity onPress={() => props.navigation.navigate('Profile')}>
-        <View style={styles.profileContainer}>
-          <Text style={styles.profileName}>{formValues.name}</Text>
-          <Text style={styles.profileEmail}>{formValues.email}</Text>
-        </View>
-      </TouchableOpacity>
+      {/* Profile Section - Hide on iOS */}
+      {Platform.OS !== 'ios' && (
+        <TouchableOpacity onPress={() => props.navigation.navigate('Profile')}>
+          <View style={styles.profileContainer}>
+            <Text style={styles.profileName}>{formValues.name}</Text>
+            <Text style={styles.profileEmail}>{formValues.email}</Text>
+          </View>
+        </TouchableOpacity>
+      )}
 
       {/* Drawer Items */}
       <ScrollView style={styles.drawerList}>
         {props.state.routes.map((route: any, index: any) => {
           const isFocused = props.state.index === index;
+          const hideOnIOS =
+            Platform.OS === 'ios' &&
+            (route.name === 'Profile' || route.name === 'Settings');
+          const shouldShow = route.name !== 'Details' && !hideOnIOS;
           return (
-            route.name !== 'Details' && (
+            shouldShow && (
               <TouchableOpacity
                 key={route.name}
                 style={[
@@ -116,13 +123,15 @@ const CustomDrawerContent = (props: any) => {
         })}
       </ScrollView>
 
-      {/* Logout Button */}
-      <TouchableOpacity
-        style={styles.logoutButton}
-        onPress={() => setModalVisible(true)}>
-        <Icon name="logout" size={22} color="#fff" />
-        <Text style={styles.logoutText}>Logout</Text>
-      </TouchableOpacity>
+      {/* Logout Button - Hide on iOS */}
+      {Platform.OS !== 'ios' && (
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={() => setModalVisible(true)}>
+          <Icon name="logout" size={22} color="#fff" />
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      )}
 
       {/* Logout Confirmation Modal */}
       <Modal
@@ -233,15 +242,23 @@ const CustomHeader = ({title}: any) => {
           <Text style={styles.headerTitle}>{title}</Text>
         </View>
 
-        {/* Profile Icon in Circle */}
-        {/* Profile Icon in Circle with Dropdown */}
-        <TouchableOpacity
-          ref={profileRef}
-          onPress={() => handleOptionSelect('Profile')}>
-          <View style={styles.iconContainer}>
-            <Icon name="person" size={24} color="#fff" />
-          </View>
-        </TouchableOpacity>
+        {/* Right action: iOS shows Top 10 shortcut, Android shows Profile */}
+        {Platform.OS === 'ios' ? (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Top 10 Tickets' as never)}>
+            <View style={styles.iconContainer}>
+              <Icon name="star" size={24} color="#fff" />
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            ref={profileRef}
+            onPress={() => handleOptionSelect('Profile')}>
+            <View style={styles.iconContainer}>
+              <Icon name="person" size={24} color="#fff" />
+            </View>
+          </TouchableOpacity>
+        )}
       </View>
     </ImageBackground>
   );
@@ -296,12 +313,19 @@ export default function AppNavigator() {
   useEffect(() => {
     const checkUserData = async () => {
       try {
-        const userData = await AsyncStorage.getItem('userToken');
-        setInitialRoute(userData ? 'homestack' : 'login');
+        // If iOS, always route to homestack
+        if (Platform.OS === 'ios') {
+          setInitialRoute('homestack');
+        } else {
+          // Android: check user token
+          const userData = await AsyncStorage.getItem('userToken');
+          setInitialRoute(userData ? 'homestack' : 'login');
+        }
         // console.log(userData, '12oken');
       } catch (error) {
         // console.error('Error checking user data:', error);
-        setInitialRoute('login');
+        // If iOS, always route to homestack even on error
+        setInitialRoute(Platform.OS === 'ios' ? 'homestack' : 'login');
       }
     };
 
@@ -441,7 +465,13 @@ const styles = StyleSheet.create({
   headerBackground: {
     width: '100%',
     // backgroundColor: '#fe6901',
-    height: 150, // Adjust as needed for your design
+    ...(Platform.OS === 'ios'
+      ? {
+          height: 120, // Adjust as needed for your design
+        }
+      : {
+          height: 150, // Adjust as needed for your design
+        }),
   },
   header: {
     flexDirection: 'row',

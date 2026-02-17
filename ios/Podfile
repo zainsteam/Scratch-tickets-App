@@ -6,9 +6,13 @@ ENV['RCT_NEW_ARCH_ENABLED'] = '0'
 require_relative '../node_modules/react-native/scripts/react_native_pods'
  
 
+
 target 'scratchticketgenie' do
   use_frameworks! :linkage => :static
   config = use_native_modules!
+
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
 
   use_react_native!(
     :path => config[:reactNativePath],

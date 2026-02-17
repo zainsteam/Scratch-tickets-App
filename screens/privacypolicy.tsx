@@ -1,5 +1,12 @@
 import React from 'react';
-import {StyleSheet, Text, View, ScrollView, Linking} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Linking,
+  Platform,
+} from 'react-native';
 
 const PrivacyPolicy = ({navigation}: any) => {
   const handleEmailPress = () => {
@@ -37,17 +44,22 @@ const PrivacyPolicy = ({navigation}: any) => {
         content={
           <>
             <Text style={styles.sectionContent}>
-              <Text style={styles.bold}>Account Information:</Text> To access
-              app features, we ask for your name and email address during
-              account registration. This information is used only to manage your
-              account and provide you with a personalized experience.
+              <Text style={styles.bold}>Personal Information:</Text>
+              Scratch Ticket Genie does not collect personally identifiable
+              information such as your name, email address, phone number, or
+              location.
             </Text>
             {'\n\n'}
             <Text style={styles.sectionContent}>
-              <Text style={styles.bold}>Usage Data:</Text> We may collect
-              non-personal data, such as device type and general app usage, to
-              improve performance and fix issues. No sensitive or unnecessary
-              information is collected.
+              <Text style={styles.bold}>Device Information:</Text>
+              To support app functionality, analytics, and advertising, we
+              collect non-personal device information, including: Device ID
+              (Advertising ID) Device type and operating system App usage data
+              and interaction metrics This data does not directly identify you
+              and is used solely for operational and advertising purposes.
+              Analytics and Advertising We use third-party services, including
+              Firebase and Google Ads, to: Analyze app performance and usage
+              trends Deliver relevant advertisements
             </Text>
           </>
         }
@@ -91,19 +103,25 @@ export default PrivacyPolicy;
 
 const styles = StyleSheet.create({
   container: {
+    ...(Platform.OS === 'ios'
+      ? {}
+      : {
+          marginTop: -30,
+          backgroundColor: '#f4f4f4',
+          // Drop shadow for iOS
+          shadowColor: '#000', // Shadow color
+          shadowOffset: {width: 0, height: 16}, // Increased offset for better visibility
+          shadowOpacity: 1, // Increased opacity for a more defined shadow
+          shadowRadius: 8, // Increased blur radius for a softer shadow
+          // Drop shadow for Android
+          elevation: 10, // Increased elevation for a stronger shadow
+          borderTopRightRadius: 30,
+          borderTopLeftRadius: 30,
+        }),
     flex: 1,
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
-    marginTop: -30,
     paddingTop: 10,
     paddingHorizontal: 20,
     zIndex: 1000,
-    backgroundColor: '#f4f4f4',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 16},
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 10,
   },
   heading: {
     fontSize: 22,

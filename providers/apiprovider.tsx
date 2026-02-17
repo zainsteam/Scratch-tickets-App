@@ -60,6 +60,7 @@ export const registerUser = async (name: any, email: any, password: any) => {
       throw new Error(data.message || 'Registration failed');
     }
   } catch (error) {
+    console.log(error, 'error');
     throw error;
   }
 };
@@ -89,8 +90,22 @@ export const fetchTopTickets = async (stateName: any, type: any) => {
       },
     );
 
+    const data = await response.json();
+
+    // 🔹 BUSINESS 404 (No tickets)
+    if (response.status === 404) {
+      return {
+        success: false,
+        empty: true,
+        status: 404,
+        message: data.message,
+        description: data.description,
+        state: data.state,
+      };
+    }
+
     if (!response.ok) {
-      throw new Error(`HTTP Error! Status: ${response.status}`);
+      throw new Error(`HTTP Error! Status: ${response}`);
     }
 
     const contentType = response.headers.get('content-type');
@@ -98,11 +113,11 @@ export const fetchTopTickets = async (stateName: any, type: any) => {
       throw new Error('Response is not in JSON format.');
     }
 
-    const data = await response.json();
+    // const data = await response.json();
     return data;
-  } catch (error) {
-    // console.error('API fetch error:', error);
-    return []; // Return an empty array to prevent crashes
+  } catch (error: any) {
+    console.error('API fetch error:', error);
+    return error; // Return an empty array to prevent crashes
   }
 };
 

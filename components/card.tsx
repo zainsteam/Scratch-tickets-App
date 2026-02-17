@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'left',
     marginBottom: 10,
+    paddingTop: 20,
   },
   card: {
     width: '48%',

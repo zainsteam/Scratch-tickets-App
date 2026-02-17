@@ -9,6 +9,7 @@ import {
   Modal,
   Linking,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import {fetchTopTickets} from '../providers/apiprovider';
@@ -21,6 +22,7 @@ const TicketDetailsScreen = ({route}: any) => {
   console.log(type, 'typeeee');
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [TicketDescription, setTicketDescription] = useState<any>();
   // Update useState with correct type
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
@@ -64,11 +66,12 @@ const TicketDetailsScreen = ({route}: any) => {
       const loadTickets = async () => {
         try {
           const fetchedTickets = await fetchTopTickets(select, type);
+          setTicketDescription(fetchedTickets);
           let data = fetchedTickets.tickets;
-          // console.log(data, 'adada');
+          console.log(fetchedTickets, 'adada');
           setTickets(data);
         } catch (error) {
-          // console.error('Error fetching tickets:', error);
+          console.error('Error fetching tickets:', error);
         } finally {
           setLoading(false);
         }
@@ -318,7 +321,9 @@ const TicketDetailsScreen = ({route}: any) => {
           )}
         />
       ) : (
-        <Text style={styles.noTicketsText}>No tickets available</Text>
+        <Text style={styles.noTicketsText}>
+          {TicketDescription?.description}
+        </Text>
       )}
 
       {/* Modal */}
@@ -457,14 +462,27 @@ const styles = StyleSheet.create({
   // },
 
   screenContainer: {
+    ...(Platform.OS === 'ios'
+      ? {}
+      : {
+          marginTop: -30,
+          backgroundColor: '#f4f4f4',
+          // Drop shadow for iOS
+          shadowColor: '#000', // Shadow color
+          shadowOffset: {width: 0, height: 16}, // Increased offset for better visibility
+          shadowOpacity: 1, // Increased opacity for a more defined shadow
+          shadowRadius: 8, // Increased blur radius for a softer shadow
+          // Drop shadow for Android
+          elevation: 10, // Increased elevation for a stronger shadow
+        }),
     flex: 1,
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
-    marginTop: -30,
+    // borderTopRightRadius: 30,
+    // borderTopLeftRadius: 30,
+    // marginTop: -30,
     paddingTop: 30,
     paddingHorizontal: 15,
     zIndex: 1000,
-    backgroundColor: '#f4f4f4',
+    // backgroundColor: '#f4f4f4',
   },
   loader: {
     marginTop: 50,

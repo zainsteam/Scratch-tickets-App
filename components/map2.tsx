@@ -7,6 +7,8 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  Modal,
+  Platform,
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -30,7 +32,7 @@ import {generateStates} from './stateData';
 import {fetchStates} from '../providers/apiprovider';
 import {useFocusEffect} from '@react-navigation/native';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 interface USState {
   label: string;
@@ -67,6 +69,7 @@ const Map2Component = ({type, navigation}: any) => {
   const translateY = useSharedValue(0);
   const offsetX = useSharedValue(0);
   const offsetY = useSharedValue(0);
+  const [showPicker, setShowPicker] = useState(false);
 
   // Gesture Handlers
   const pinchGesture = Gesture.Pinch().onUpdate(e => {
@@ -215,27 +218,77 @@ const Map2Component = ({type, navigation}: any) => {
 
       <View style={styles.pickerRow}>
         <Text style={styles.title}>Select the State:</Text>
-        <View style={styles.pickerWrapper}>
-          <Picker
-            ref={pickerRef}
-            selectedValue={selectedState}
-            dropdownIconColor="black"
-            onValueChange={itemValue => {
-              if (itemValue && itemValue !== '-') {
-                navigation.navigate('Details', {select: itemValue, type});
-              }
-            }}
-            style={styles.picker}>
-            <Picker.Item label="Select a state..." value="-" />
-            {states.map(state => (
-              <Picker.Item
-                key={state.label}
-                label={state.label}
-                value={state.label}
-              />
-            ))}
-          </Picker>
-        </View>
+        {/* For iOS → Show Button & Modal */}
+        {Platform.OS === 'ios' ? (
+          <>
+            <TouchableOpacity
+              style={styles.pickerButton}
+              onPress={() => setShowPicker(true)}>
+              <Text style={styles.pickerButtonText}>
+                {selectedState || 'Select a state...'}
+              </Text>
+            </TouchableOpacity>
+
+            <Modal
+              visible={showPicker}
+              animationType="slide"
+              transparent={true}
+              onRequestClose={() => setShowPicker(false)}>
+              <View style={styles.modalOverlay}>
+                <View style={styles.modalContent}>
+                  <View style={styles.modalHeader}>
+                    <TouchableOpacity onPress={() => setShowPicker(false)}>
+                      <Text style={styles.closeText}>Done</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <Picker
+                    selectedValue={selectedState}
+                    onValueChange={itemValue => {
+                      if (itemValue && itemValue !== '-') {
+                        setShowPicker(false);
+                        navigation.navigate('Details', {
+                          select: itemValue,
+                          type,
+                        });
+                      }
+                    }}>
+                    <Picker.Item label="Select a state..." value="-" />
+                    {states.map(state => (
+                      <Picker.Item
+                        key={state.label}
+                        label={state.label}
+                        value={state.label}
+                      />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+            </Modal>
+          </>
+        ) : (
+          <View style={styles.pickerWrapper}>
+            <Picker
+              ref={pickerRef}
+              selectedValue={selectedState}
+              dropdownIconColor="black"
+              onValueChange={itemValue => {
+                if (itemValue && itemValue !== '-') {
+                  navigation.navigate('Details', {select: itemValue, type});
+                }
+              }}
+              style={styles.picker}>
+              <Picker.Item label="Select a state..." value="-" />
+              {states.map(state => (
+                <Picker.Item
+                  key={state.label}
+                  label={state.label}
+                  value={state.label}
+                />
+              ))}
+            </Picker>
+          </View>
+        )}
       </View>
 
       <View style={styles.mapContainer}>
@@ -249,7 +302,10 @@ const Map2Component = ({type, navigation}: any) => {
           <GestureHandlerRootView style={styles.container}>
             <GestureDetector gesture={composedGesture}>
               <Animated.View style={animatedStyle}>
-                <Svg viewBox="0 0 500 500" height="400" width={width * 1.5}>
+                <Svg
+                  viewBox="0 0 500 500"
+                  height={height * 0.55}
+                  width={width * 1.5}>
                   {states.map((state, index) => (
                     <StateItem key={index} state={state} />
                   ))}
@@ -279,16 +335,17 @@ const styles = StyleSheet.create({
     // backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10, // Optional: Add padding to ensure map doesn't touch the edges of the screen
+    padding: 0, // Optional: Add padding to ensure map doesn't touch the edges of the screen
   },
   container: {
     // backgroundColor: '#f0f0f0',
   },
   mainHeading: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'left',
     marginBottom: 4,
+    paddingTop: 20,
   },
   body: {
     fontSize: 13,
@@ -340,5 +397,35 @@ const styles = StyleSheet.create({
   zoomText: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  pickerButton: {
+    width: '50%',
+    borderBottomColor: '#1097ff',
+    borderBottomWidth: 2,
+    paddingVertical: 8,
+  },
+  pickerButtonText: {
+    fontSize: 16,
+    color: '#000',
+  },
+
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    paddingBottom: 20,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+  },
+  modalHeader: {
+    alignItems: 'flex-end',
+    padding: 10,
+  },
+  closeText: {
+    fontSize: 18,
+    color: '#007AFF',
   },
 });

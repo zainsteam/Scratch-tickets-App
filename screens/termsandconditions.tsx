@@ -1,5 +1,12 @@
 import React from 'react';
-import {StyleSheet, Text, View, ScrollView, Linking} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Linking,
+  Platform,
+} from 'react-native';
 
 const TermsAndCondition = ({navigation}: any) => {
   const Section = ({
@@ -77,19 +84,24 @@ export default TermsAndCondition;
 
 const styles = StyleSheet.create({
   container: {
+    ...(Platform.OS === 'ios'
+      ? {}
+      : {
+          marginTop: -30,
+          backgroundColor: '#f4f4f4',
+          // Drop shadow for iOS
+          shadowColor: '#000', // Shadow color
+          shadowOffset: {width: 0, height: 16}, // Increased offset for better visibility
+          shadowOpacity: 1, // Increased opacity for a more defined shadow
+          shadowRadius: 8, // Increased blur radius for a softer shadow
+          // Drop shadow for Android
+          elevation: 10, // Increased elevation for a stronger shadow
+        }),
     flex: 1,
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
-    marginTop: -30,
+
     paddingTop: 10,
     paddingHorizontal: 20,
     zIndex: 1000,
-    backgroundColor: '#f4f4f4',
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 16},
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 10,
   },
   heading: {
     fontSize: 22,

@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 30,
     borderTopLeftRadius: 30,
     marginTop: -30,
-    paddingTop: 30,
-    paddingHorizontal: 20,
+    paddingTop: 0,
+    paddingHorizontal: 0,
     zIndex: 1000,
     backgroundColor: '#f4f4f4',
     // Drop shadow for iOS
