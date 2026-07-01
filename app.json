@@ -1,6 +1,6 @@
 {
   "name": "scratchticketgenie",
-  "displayName": "scratchticketgenie",
+  "displayName": "Scratch Ticket Genie",
   
   "react-native-google-mobile-ads": {
     "android_app_id": "ca-app-pub-3713847936361138~5663050909"

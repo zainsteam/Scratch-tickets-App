@@ -23,7 +23,10 @@ import {
 
 const adUnitId = __DEV__
   ? TestIds.ADAPTIVE_BANNER
-  : 'ca-app-pub-3713847936361138/5905727511';
+  : Platform.OS === 'android'
+  ? 'ca-app-pub-3713847936361138/5905727511'
+  : 'ca-app-pub-3713847936361138/2156204320';
+  
 
 if (Platform.OS === 'android') {
   PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
